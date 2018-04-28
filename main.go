@@ -33,7 +33,7 @@ func backOff(current time.Duration) time.Duration {
 // Dial attempts to connect to the specified server for the specified duration.
 //
 // It returns a status code usable with os.Exit().
-func Dial(url string, maxTimeout time.Duration) DialResult {
+func Dial(url string, maxTimeout time.Duration, verbose bool) DialResult {
 	const ExpectedErrorString = "no reachable servers"
 	const Nanoseconds = float64(time.Second)
 
@@ -61,17 +61,20 @@ func Dial(url string, maxTimeout time.Duration) DialResult {
 		}
 
 		timeout = backOff(timeout)
-		fmt.Printf("Unavailable in %3f seconds, retrying in %.3f seconds.\n",
-			float64(t1.Sub(t0))/Nanoseconds,
-			float64(timeout)/Nanoseconds)
+		if verbose {
+			fmt.Printf("Unavailable in %3f seconds, retrying in %.3f seconds.\n",
+				float64(t1.Sub(t0))/Nanoseconds,
+				float64(timeout)/Nanoseconds)
+		}
 		time.Sleep(timeout)
 	}
 
 }
 
-func parseFlags(url *string, timeout *time.Duration) {
+func parseFlags(url *string, timeout *time.Duration, verbose *bool) {
 	flag.StringVar(url, "url", "mongodb://localhost:27017",
 		"The mongodb URL to which to connect.")
+	flag.BoolVar(verbose, "v", true, "Make the command more verbose")
 
 	uintTimeout := flag.Uint("timeout", 30,
 		"The maximum delay in seconds after which the command will stop trying to connect")
@@ -84,8 +87,9 @@ func parseFlags(url *string, timeout *time.Duration) {
 func main() {
 	var url string
 	var timeout time.Duration
+	var verbose bool
 
-	parseFlags(&url, &timeout)
+	parseFlags(&url, &timeout, &verbose)
 
-	os.Exit(int(Dial(url, timeout)))
+	os.Exit(int(Dial(url, timeout, verbose)))
 }
