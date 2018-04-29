@@ -6,7 +6,8 @@ sharding front (`mongos`) for a maximum duration.
 Its main use is as a way to start using a connection as soon as its server 
 becomes available, without relying on manually adjusted timeouts.
 
-[![GoDoc](https://godoc.org/github.com/FGM/untilMongod?status.svg)](https://godoc.org/github.com/FGM/untilMongod)
+[![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=develop)](https://travis-ci.org/fgm/untilMongod)
+[![GoDoc](https://godoc.org/github.com/fgm/untilMongod?status.svg)](https://godoc.org/github.com/fgm/untilMongod)
 
 
 ## Syntax
@@ -30,7 +31,7 @@ becomes available, without relying on manually adjusted timeouts.
 Assuming a Go 1.10 toolchain is available, just do:
 
 ```bash
-go get github.com/FGM/untilMongod
+go get github.com/fgm/untilMongod
 ```
 
 This will install the `untilMongod` command in `$GOPATH/bin`, by default:

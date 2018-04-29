@@ -40,7 +40,7 @@ func NewMgoV2Dial() DriverDial {
 // NewMongoDbDial returns a new DriverDial function using the official MongoDB
 // driver available at https://github.com/mongodb/mongo-go-driver
 func NewMongoDbDial() DriverDial {
-	// BUG(FGM): NewMongoDBDial() needs to be actually implemented, when that driver
+	// BUG(fgm): NewMongoDBDial() needs to be actually implemented, when that driver
 	// reaches at least beta status and gets some documentation.
 	return func(url string, duration time.Duration) error {
 		panic("MongoDB official driver is not implemented yet")

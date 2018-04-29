@@ -125,7 +125,7 @@ func TestDial_verbose(t *testing.T) {
 	}
 
 	// Retried response should output a retry message.
-	Dial("", 10000*time.Millisecond, true, slowDialer, &b)
+	Dial("", 10*time.Second, true, slowDialer, &b)
 	var retryRegex = regexp.MustCompile(`^Unavailable in .* seconds, retrying in .* seconds\.`)
 	var output = b.String()
 	if !retryRegex.MatchString(output) {
