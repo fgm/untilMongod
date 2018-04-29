@@ -6,7 +6,7 @@ sharding front (`mongos`) for a maximum duration.
 Its main use is as a way to start using a connection as soon as its server 
 becomes available, without relying on manually adjusted timeouts.
 
-[![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=develop)](https://travis-ci.org/fgm/untilMongod)
+[![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=master)](https://travis-ci.org/fgm/untilMongod)
 [![GoDoc](https://godoc.org/github.com/fgm/untilMongod?status.svg)](https://godoc.org/github.com/fgm/untilMongod)
 
 
