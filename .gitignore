@@ -1,4 +1,4 @@
-/untilMongod
-.idea/workspace.xml
+/.idea
 /coverage
 /examples/node_modules
+/untilMongod

@@ -1,10 +1,12 @@
 # untilMongod
 
-The `untilMongod` command attempts to connect to a MongoDB &reg; server (`mongod`) or 
+The `untilMongod` command attempts to connect to a MongoDB® server (`mongod`) or 
 sharding front (`mongos`) for a maximum duration.
 
 Its main use is as a way to start using a connection as soon as its server 
 becomes available, without relying on manually adjusted timeouts.
+
+[![GoDoc](https://godoc.org/github.com/FGM/untilMongod?status.svg)](https://godoc.org/github.com/FGM/untilMongod)
 
 
 ## Syntax
@@ -13,6 +15,7 @@ becomes available, without relying on manually adjusted timeouts.
     
 * `-url` is a typical MongoDB URL, defaulting to `mongodb://localhost:27017`
 * `-timeout` is the maximum delay the command will wait before aborting.
+* `-v` will increase verbosity, outputting messages on stderr on each retry.
 
 
 ## Exit codes
@@ -22,11 +25,26 @@ becomes available, without relying on manually adjusted timeouts.
 * 2: another type of error occurred
 
 
-## Usage example
+## Installing the command
 
-The `examples/example.bash` script show how to use `untilMongo` to run a NodeJS 
+Assuming a Go 1.10 toolchain is available, just do:
+
+```bash
+go get github.com/FGM/untilMongod
+```
+
+This will install the `untilMongod` command in `$GOPATH/bin`, by default:
+
+* `$HOME/go/bin` on UNIX-like systems (Linux, macOS) 
+* `%USERPROFILE%\go\bin` on Windows systems.
+
+
+## Running the Node.JS example
+
+The `examples/example.bash` script show how to use `untilMongo` to run a Node.JS 
 application only once the MongoDB server it tries to connect to has become 
-available.
+available. The application itself is just an example showing the equivalent of
+the `rs.Status()` mongo shell command.
 
 To run it:
 
@@ -37,8 +55,19 @@ bash example.bash
 ``` 
 
 
+## Running tests
+
+untilMongod uses the standard go testing package. The recommended way to run it
+is:
+
+```bash
+go test -coverprofile coverage -covermode count ./...
+go tool cover -html coverage
+```
+
+
 ## IP information
 
-* &copy; 2018 Frederic G. MARAND
+* © 2018 Frederic G. MARAND
 * Published under the [General Public License](LICENSE), version 3 or later.
 * MongoDB is a trademark of MongoDB, Inc.
