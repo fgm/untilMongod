@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="untilMongod" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="true">
+    <module name="untilMongod" />
+    <working_directory value="$PROJECT_DIR$/" />
+    <go_parameters value="-i -o untilMongod " />
+    <parameters value="-url mongodb://localhost:27017 -timeout 5 -v" />
+    <kind value="DIRECTORY" />
+    <filePath value="$PROJECT_DIR$/" />
+    <package value="github.com/fgm/untilMongod" />
+    <directory value="$PROJECT_DIR$/" />
+    <output_directory value="$PROJECT_DIR$/" />
+    <method />
+  </configuration>
+</component>
