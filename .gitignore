@@ -1,4 +1,5 @@
 /.idea
 /coverage*
+/c.out
 /examples/node_modules
 /untilMongod
