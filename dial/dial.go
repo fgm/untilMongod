@@ -9,11 +9,12 @@ import (
 	"os"
 )
 
-// DialResult is the type of the Dial() results.
-type DialResult int
+// Result is the type of the Dial() results.
+type Result int
 
+// These constants represent the result of Dial().
 const (
-	Success DialResult = iota
+	Success    Result = iota
 	Timeout
 	OtherError
 )
@@ -25,7 +26,7 @@ const (
 // mechanism.
 type DriverDial = func(url string, duration time.Duration) error
 
-// NewMongoV2Dial returns a new DriverDial function using the MGOv2 driver
+// NewMgoV2Dial returns a new DriverDial function using the MGOv2 driver
 // available at https://github.com/globalsign/mgo
 //
 // That driver replaces the original Labix driver and the now-unmaintained
@@ -47,7 +48,8 @@ func NewMongoDbDial() DriverDial {
 	}
 }
 
-// The string used by MongoDB to signal it could not connect.
+// ExpectedErrorString is used by MongoDB clients to signal it could not
+// connect, starting with the mongo shell.
 const ExpectedErrorString = "no reachable servers"
 
 // Dial attempts to connect to the specified server for the specified duration,
@@ -57,7 +59,7 @@ const ExpectedErrorString = "no reachable servers"
 //
 // The final variadic io.Writer argument allows passing ONE specific writer,
 // and defaulting to os.Stderr when none is passed.
-func Dial(url string, maxTimeout time.Duration, verbose bool, dialer DriverDial, w ...io.Writer) DialResult {
+func Dial(url string, maxTimeout time.Duration, verbose bool, dialer DriverDial, w ...io.Writer) Result {
 	var writer io.Writer
 	if len(w) == 0 {
 		writer = os.Stderr

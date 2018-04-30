@@ -10,15 +10,16 @@ import (
 )
 
 func TestDial_happy(t *testing.T) {
-	var actual DialResult
+	var actual Result
+	var happyDialer DriverDial
 
-	var happyDialer DriverDial = func(url string, duration time.Duration) error {
+	happyDialer = func(url string, duration time.Duration) error {
 		return nil
 	}
 
 	var attempts = []struct {
 		timeout  time.Duration
-		expected DialResult
+		expected Result
 		message  string
 	}{
 		{1, Success, "Valid timeout"},
@@ -40,15 +41,16 @@ func TestDial_happy(t *testing.T) {
 }
 
 func TestDial_sad(t *testing.T) {
-	var actual DialResult
+	var actual Result
+	var sadDialer DriverDial
 
-	var sadDialer DriverDial = func(url string, duration time.Duration) error {
-		return errors.New("Sad")
+	sadDialer = func(url string, duration time.Duration) error {
+		return errors.New("sad")
 	}
 
 	var attempts = []struct {
 		timeout  time.Duration
-		expected DialResult
+		expected Result
 		message  string
 	}{
 		{1, OtherError, "Valid timeout"},
@@ -70,9 +72,10 @@ func TestDial_sad(t *testing.T) {
 }
 
 func TestDial_slow(t *testing.T) {
-	var actual DialResult
+	var actual Result
+	var slowDialer DriverDial
 
-	var slowDialer DriverDial = func(url string, timeout time.Duration) error {
+	slowDialer = func(url string, timeout time.Duration) error {
 		time.Sleep(1 * time.Millisecond)
 		if timeout > 10*time.Millisecond {
 			return nil
@@ -82,7 +85,7 @@ func TestDial_slow(t *testing.T) {
 
 	var attempts = []struct {
 		timeout  time.Duration
-		expected DialResult
+		expected Result
 		message  string
 	}{
 		{1 * time.Nanosecond, Timeout, "Short timeout"},
@@ -106,9 +109,10 @@ func TestDial_slow(t *testing.T) {
 
 func TestDial_verbose(t *testing.T) {
 	t.Parallel()
-
 	// This dialer only succeeds when given at least 10 msec as a timeout.
-	var slowDialer DriverDial = func(url string, timeout time.Duration) error {
+	var slowDialer DriverDial
+
+	slowDialer = func(url string, timeout time.Duration) error {
 		if timeout > 10*time.Millisecond {
 			time.Sleep(timeout)
 			return nil
