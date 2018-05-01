@@ -46,6 +46,7 @@ func main() {
 
 	parseFlags(&url, &timeout, &verbose)
 
-	dialResult := dial.Dial(url, timeout, verbose, dialer)
+	reporter := dial.NewReporter(verbose)
+	dialResult := dial.Dial(url, timeout, dialer, reporter)
 	os.Exit(int(dialResult))
 }

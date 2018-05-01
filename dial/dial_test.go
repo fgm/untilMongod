@@ -31,7 +31,8 @@ func TestDial_happy(t *testing.T) {
 	for _, attempt := range attempts {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
-			actual = Dial("", attempt.timeout, false, happyDialer)
+			reporter := NewReporter(false)
+			actual = Dial("", attempt.timeout, happyDialer, reporter)
 			if actual != attempt.expected {
 				t.Logf("Expected %v, got %v\n", attempt.expected, actual)
 				t.Fail()
@@ -62,7 +63,8 @@ func TestDial_sad(t *testing.T) {
 	for _, attempt := range attempts {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
-			actual = Dial("", attempt.timeout, false, sadDialer)
+			reporter := NewReporter(false)
+			actual = Dial("", attempt.timeout, sadDialer, reporter)
 			if actual != attempt.expected {
 				t.Logf("Expected %v, got %v\n", attempt.expected, actual)
 				t.Fail()
@@ -98,7 +100,8 @@ func TestDial_slow(t *testing.T) {
 	for _, attempt := range attempts {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
-			actual = Dial("", attempt.timeout, false, slowDialer)
+			reporter := NewReporter(false)
+			actual = Dial("", attempt.timeout, slowDialer, reporter)
 			if actual != attempt.expected {
 				t.Logf("Expected %v, got %v\n", attempt.expected, actual)
 				t.Fail()
@@ -123,13 +126,15 @@ func TestDial_verbose(t *testing.T) {
 	var b strings.Builder
 
 	b = strings.Builder{}
-	Dial("", 1, true, slowDialer, &b)
+	reporter := NewReporter(true, &b)
+
+	Dial("", 1, slowDialer, reporter)
 	if b.Len() != 0 {
 		t.Error("Success without a retry should not output anything.")
 	}
 
 	// Retried response should output a retry message.
-	Dial("", 10*time.Second, true, slowDialer, &b)
+	Dial("", 10*time.Second, slowDialer, reporter)
 	var retryRegex = regexp.MustCompile(`^Unavailable in .* seconds, retrying in .* seconds\.`)
 	var output = b.String()
 	if !retryRegex.MatchString(output) {

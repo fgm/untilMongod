@@ -1,12 +1,13 @@
 package dial
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/globalsign/mgo"
+	"fmt"
 	"io"
 	"os"
+
+	"github.com/globalsign/mgo"
 )
 
 // Result is the type of the Dial() results.
@@ -14,7 +15,7 @@ type Result int
 
 // These constants represent the result of Dial().
 const (
-	Success    Result = iota
+	Success Result = iota
 	Timeout
 	OtherError
 )
@@ -52,20 +53,43 @@ func NewMongoDbDial() DriverDial {
 // connect, starting with the mongo shell.
 const ExpectedErrorString = "no reachable servers"
 
-// Dial attempts to connect to the specified server for the specified duration,
-// using the specified connection method.
-//
-// It returns a status code usable with os.Exit().
+// Reporter prints to a writer, defaulting to stderr, only if verbose is true.
+type Reporter struct {
+	writer  io.Writer
+	verbose bool
+}
+
+// Printf only prints if r.verbose is true.
+func (r Reporter) Printf(format string, v ...interface{}) {
+	if r.verbose {
+		fmt.Fprintf(r.writer, format, v)
+	}
+}
+
+// NewReporter creates an instance of Reporter.
 //
 // The final variadic io.Writer argument allows passing ONE specific writer,
 // and defaulting to os.Stderr when none is passed.
-func Dial(url string, maxTimeout time.Duration, verbose bool, dialer DriverDial, w ...io.Writer) Result {
+func NewReporter(verbose bool, w ...io.Writer) Reporter {
 	var writer io.Writer
 	if len(w) == 0 {
 		writer = os.Stderr
 	} else {
 		writer = w[0]
 	}
+
+	return Reporter{
+		verbose: verbose,
+		writer:  writer,
+	}
+}
+
+// Dial attempts to connect to the specified server for the specified duration,
+// using the specified connection method.
+//
+// It returns a status code usable with os.Exit().
+//
+func Dial(url string, maxTimeout time.Duration, dialer DriverDial, r Reporter) Result {
 	const Nanoseconds = float64(time.Second)
 
 	t0 := time.Now()
@@ -93,12 +117,9 @@ func Dial(url string, maxTimeout time.Duration, verbose bool, dialer DriverDial,
 		}
 
 		timeout = backOff(timeout)
-		if verbose {
-			fmt.Fprintf(writer, "Unavailable in %3f seconds, retrying in %.3f seconds.\n",
-				float64(t1.Sub(t0))/Nanoseconds,
-				float64(timeout)/Nanoseconds)
-		}
+		r.Printf("Unavailable in %3f seconds, retrying in %.3f seconds.\n",
+			float64(t1.Sub(t0))/Nanoseconds,
+			float64(timeout)/Nanoseconds)
 		time.Sleep(timeout)
 	}
-
 }
