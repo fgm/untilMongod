@@ -10,6 +10,8 @@ import (
 )
 
 func TestDial_happy(t *testing.T) {
+	t.Parallel()
+
 	var actual Result
 	var happyDialer DriverDial
 
@@ -27,7 +29,6 @@ func TestDial_happy(t *testing.T) {
 		{-1, Success, "Negative timeout"},
 	}
 
-	t.Parallel()
 	for _, attempt := range attempts {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
@@ -42,6 +43,8 @@ func TestDial_happy(t *testing.T) {
 }
 
 func TestDial_sad(t *testing.T) {
+	t.Parallel()
+
 	var actual Result
 	var sadDialer DriverDial
 
@@ -59,7 +62,6 @@ func TestDial_sad(t *testing.T) {
 		{-1, OtherError, "Negative timeout"},
 	}
 
-	t.Parallel()
 	for _, attempt := range attempts {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
@@ -74,6 +76,8 @@ func TestDial_sad(t *testing.T) {
 }
 
 func TestDial_slow(t *testing.T) {
+	t.Parallel()
+
 	var actual Result
 	var slowDialer DriverDial
 
@@ -96,7 +100,6 @@ func TestDial_slow(t *testing.T) {
 		{-1, Timeout, "Negative timeout"},
 	}
 
-	t.Parallel()
 	for _, attempt := range attempts {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
@@ -134,11 +137,35 @@ func TestDial_verbose(t *testing.T) {
 	}
 
 	// Retried response should output a retry message.
-	Dial("", 10*time.Second, slowDialer, reporter)
+	Dial("", 1*time.Second, slowDialer, reporter)
 	var retryRegex = regexp.MustCompile(`^Unavailable in .* seconds, retrying in .* seconds\.`)
 	var output = b.String()
 	if !retryRegex.MatchString(output) {
 		t.Error("Verbose output on a retry did not match the expected pattern")
 	}
 
+}
+
+func TestNewMgoV2Dial(t *testing.T) {
+	t.Parallel()
+	dialer := NewMgoV2Dial()
+	err := dialer("", 100*time.Millisecond)
+	// err may be true if there is no server.
+	if err != nil {
+		if err.Error() != "no reachable servers" {
+			t.Error("NewMgoV2Dial returned an unexpected error.")
+		}
+	}
+}
+
+func TestNewMongoDbDial(t *testing.T) {
+	t.Parallel()
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("NewMongoDbial() did not panic although no implementation exists")
+		}
+	}()
+
+	dialer := NewMongoDbDial()
+	dialer("", 100*time.Millisecond)
 }
