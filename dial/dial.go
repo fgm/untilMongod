@@ -62,7 +62,7 @@ type Reporter struct {
 // Printf only prints if r.verbose is true.
 func (r Reporter) Printf(format string, v ...interface{}) {
 	if r.verbose {
-		fmt.Fprintf(r.writer, format, v)
+		fmt.Fprintf(r.writer, format, v...)
 	}
 }
 
