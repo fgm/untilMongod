@@ -3,6 +3,8 @@ sudo: false
 go:
   - "1.10"
   - tip
+services:
+  - mongodb
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter

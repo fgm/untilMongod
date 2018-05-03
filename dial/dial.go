@@ -34,7 +34,12 @@ type DriverDial = func(url string, duration time.Duration) error
 // https://github.com/go-mgo/mgo/tree/v2 driver.
 func NewMgoV2Dial() DriverDial {
 	return func(url string, duration time.Duration) error {
-		_, err := mgo.DialWithTimeout(url, duration)
+		session, err := mgo.DialWithTimeout(url, duration)
+
+		if session != nil {
+			session.Close()
+		}
+
 		return err
 	}
 }
@@ -107,6 +112,7 @@ func Dial(url string, maxTimeout time.Duration, dialer DriverDial, r Reporter) R
 
 		// Unexpected errors.
 		if err.Error() != ExpectedErrorString {
+			r.Printf("Unexpected error %v.\n", err)
 			return OtherError
 		}
 

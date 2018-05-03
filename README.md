@@ -17,8 +17,16 @@ becomes available, without relying on manually adjusted timeouts.
     untilMongo -url mongodb://example.com:11117 -timeout 60
     
 * `-url` is a typical MongoDB URL, defaulting to `mongodb://localhost:27017`
+  * It supports the MGO driver [Dial() URL extensions], which is necessary to support connecting to servers directly without
+    reaching for the replica set, and other situations like authentication or pool tuning. 
+   * Specifically, to connect to a server started as part of a yet-unconfigured replica set, the URL must contain a
+     `connect=direct` query, like:
+        
+         untilMongo -url mongodb://example.com:11117?connect=direct -timeout 60
 * `-timeout` is the maximum delay the command will wait before aborting.
 * `-v` will increase verbosity, outputting messages on stderr on each retry.
+
+[Dial() URL extensions]: https://godoc.org/github.com/globalsign/mgo#Dial
 
 
 ## Exit codes
@@ -60,12 +68,23 @@ bash example.bash
 
 ## Running tests
 
-untilMongod uses the standard go testing package. The recommended way to run it
-is:
+untilMongod uses the standard go testing package. Tests should pass whether or
+not a `mongod|mongos` is available at the default `mongodb://localhost:27017`
+URL, but they will only cover the successful connection path if an instance is
+available.
+
+The recommended ways to run tests are:
 
 ```bash
+# Running all tests and generating coverage.
 go test -coverprofile coverage -covermode count ./...
 go tool cover -html coverage
+
+# Running only unit tests
+go test -short ./...
+
+# Running only integration tests
+go test -run 'Integration$' ./...
 ```
 
 

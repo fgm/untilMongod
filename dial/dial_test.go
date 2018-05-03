@@ -146,19 +146,32 @@ func TestDial_verbose(t *testing.T) {
 
 }
 
-func TestNewMgoV2Dial(t *testing.T) {
+func TestNewMgoV2DialIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping slow test for NewMgoV2Dial")
+	}
 	t.Parallel()
 	dialer := NewMgoV2Dial()
 	err := dialer("", 100*time.Millisecond)
-	// err may be true if there is no server.
+	// err will be true since there is no server at "": this is not an error.
 	if err != nil {
 		if err.Error() != "no reachable servers" {
 			t.Error("NewMgoV2Dial returned an unexpected error.")
 		}
 	}
+
+	// This may succeed if there is a server on the default MongoDB URL.
+	err = dialer("mongodb://localhost:27017", 100*time.Millisecond)
+	// err may be true if there is no server at the default URL: this is not an error.
+	if err != nil {
+		if err.Error() != "no reachable servers" {
+			t.Error("NewMgoV2Dial returned an unexpected error.")
+		}
+	}
+
 }
 
-func TestNewMongoDbDial(t *testing.T) {
+func TestNewMongoDbDialIntegration(t *testing.T) {
 	t.Parallel()
 	defer func() {
 		if r := recover(); r == nil {
