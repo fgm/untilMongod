@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Example app." type="NodeJSConfigurationType" factoryName="Node.js" path-to-js-file="app.js" working-dir="$PROJECT_DIR$/examples">
+    <envs>
+      <env name="MONGO_URL" value="mongodb://127.0.0.1/27017" />
+    </envs>
+    <method />
+  </configuration>
+</component>

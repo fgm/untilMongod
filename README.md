@@ -7,10 +7,10 @@ Its main use is as a way to start using a connection as soon as its server
 becomes available, without relying on manually adjusted timeouts.
 
 [![GoDoc](https://godoc.org/github.com/fgm/untilMongod?status.svg)](https://godoc.org/github.com/fgm/untilMongod)
-[![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=master)](https://travis-ci.org/fgm/untilMongod)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fgm/untilMongod)](https://goreportcard.com/report/github.com/fgm/untilMongod)
+[![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=develop)](https://travis-ci.org/fgm/untilMongod)
 [![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/test_coverage)](https://codeclimate.com/github/fgm/untilMongod/test_coverage)
-
 
 ## Syntax
 
