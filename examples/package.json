@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.15",
     "mongo": "^0.1.0"
   }
 }
