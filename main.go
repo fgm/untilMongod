@@ -17,9 +17,8 @@ package main
 
 import (
 	"flag"
-	"time"
-
 	"os"
+	"time"
 
 	"github.com/fgm/untilMongod/dial"
 )

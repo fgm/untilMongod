@@ -38,7 +38,7 @@ becomes available, without relying on manually adjusted timeouts.
 
 ## Installing the command
 
-Assuming a Go 1.10 toolchain is available, just do:
+Assuming a Go 1.15 toolchain is available, just do:
 
 ```bash
 go get github.com/fgm/untilMongod
@@ -90,6 +90,6 @@ go test -run 'Integration$' ./...
 
 ## IP information
 
-* © 2018 Frederic G. MARAND
+* © 2018-2020 Frederic G. MARAND.
 * Published under the [General Public License](LICENSE), version 3 or later.
 * MongoDB is a trademark of MongoDB, Inc.

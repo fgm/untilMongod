@@ -107,6 +107,7 @@ func Dial(url string, maxTimeout time.Duration, dialer DriverDial, r Reporter) R
 
 		// Success.
 		if err == nil {
+			r.Printf("Connected in %d msec.\n", time.Now().Sub(t0) / 1.0E6)
 			return Success
 		}
 

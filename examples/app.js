@@ -1,31 +1,43 @@
-const pick = require('lodash/pick');
-const client = require('mongodb').MongoClient;
+const { MongoClient } = require("mongodb");
 
 const url = process.env.MONGO_URL;
 
-const getReplicationStatus = (db, cb) => {
-    let adminDb = db.db('admin');
-    adminDb.command({ replSetGetStatus: 1}, cb);
-    db.close();
+const ping = async (db) => {
+  let adminDb = await db.db("admin");
+  const { ok } = await adminDb.command({ ping: 1 }).catch(showPingError);
+  console.log("Ping", ok ? "ok" : "ko");
+  db.close();
 };
 
-const showReplicationStatus = (err, res, db) => {
-    if (err) {
-        if (err.constructor.name !== 'MongoError') {
-            throw err;
-        }
+const showPingError = async (reason) => {
+  if (reason.constructor.name !== "MongoError") {
+    throw reason;
+  }
 
-        // Just like the mongo shell.
-        res = pick(err, ['ok', 'errmsg', 'code', 'codeName']);
-    }
-
-    console.log(res);
+  // Just like the mongo shell.
+  const details = {
+    errmsg: reason.errmsg,
+    code: reason.code,
+    codeName: reason.codeName,
+  };
+  console.log(details);
 };
 
-client.connect(url, (err, db) => {
-    if (err) {
-        throw err;
-    }
+async function run() {
+  const client = new MongoClient(url, {
+    useUnifiedTopology: true,
+    connectTimeoutMS: 100,
+    serverSelectionTimeoutMS: 100,
+  });
+  try {
+    await client.connect().catch((reason) => {
+      console.log("could not connect");
+      process.exit(1);
+    });
+    await ping(client);
+  } finally {
+    await client.close();
+  }
+}
 
-    getReplicationStatus(db, showReplicationStatus)
-});
+run().catch(console.dir);
