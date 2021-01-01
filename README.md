@@ -11,6 +11,7 @@ becomes available, without relying on manually adjusted timeouts.
 [![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=develop)](https://travis-ci.org/fgm/untilMongod)
 [![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/test_coverage)](https://codeclimate.com/github/fgm/untilMongod/test_coverage)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_shield)
 
 ## Syntax
 
@@ -93,3 +94,7 @@ go test -run 'Integration$' ./...
 * © 2018-2020 Frederic G. MARAND.
 * Published under the [General Public License](LICENSE), version 3 or later.
 * MongoDB is a trademark of MongoDB, Inc.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_large)
