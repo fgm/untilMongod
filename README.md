@@ -18,16 +18,17 @@ becomes available, without relying on manually adjusted timeouts.
     untilMongo -url mongodb://example.com:11117 -timeout 60
     
 * `-url` is a typical MongoDB URL, defaulting to `mongodb://localhost:27017`
-  * It supports the MGO driver [Dial() URL extensions], which is necessary to support connecting to servers directly without
+  * It supports the MongoDB driver [Dial() URL options], which is necessary to support connecting to servers 
+    directly without
     reaching for the replica set, and other situations like authentication or pool tuning. 
    * Specifically, to connect to a server started as part of a yet-unconfigured replica set, the URL must contain a
-     `connect=direct` query, like:
+     `directConnection=true` query, like:
         
-         untilMongo -url mongodb://example.com:11117?connect=direct -timeout 60
-* `-timeout` is the maximum delay the command will wait before aborting.
+         untilMongo -url mongodb://example.com:11117?directConnection=true -timeout 60
+* `-timeout` is the maximum delay (in seconds) the command will wait before aborting.
 * `-v` will increase verbosity, outputting messages on stderr on each retry.
 
-[Dial() URL extensions]: https://godoc.org/github.com/globalsign/mgo#Dial
+[Dial() URL extensions]: https://www.mongodb.com/docs/drivers/go/current/fundamentals/connection/#std-label-golang-connection-options
 
 
 ## Exit codes
@@ -57,6 +58,11 @@ The `examples/example.bash` script show how to use `untilMongo` to run a Node.JS
 application only once the MongoDB server it tries to connect to has become 
 available. The application itself is just an example showing the equivalent of
 the `rs.Status()` mongo shell command.
+
+It assumes that:
+
+- MongoDB Community has been installed
+- Go is installed on the host
 
 To run it:
 
@@ -91,7 +97,7 @@ go test -run 'Integration$' ./...
 
 ## IP information
 
-* © 2018-2020 Frederic G. MARAND.
+* © 2018-2022 Frederic G. MARAND.
 * Published under the [General Public License](LICENSE), version 3 or later.
 * MongoDB is a trademark of MongoDB, Inc.
 

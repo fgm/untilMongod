@@ -3,3 +3,5 @@
 /c.out
 /examples/node_modules
 /untilMongod
+yarn.lock
+package-lock.json

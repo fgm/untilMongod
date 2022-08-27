@@ -5,7 +5,7 @@ const url = process.env.MONGO_URL;
 const ping = async (db) => {
   let adminDb = await db.db("admin");
   const { ok } = await adminDb.command({ ping: 1 }).catch(showPingError);
-  console.log("Ping", ok ? "ok" : "ko");
+  console.log("Ping from NodeJS", ok ? "ok" : "ko");
   db.close();
 };
 
@@ -31,7 +31,7 @@ async function run() {
   });
   try {
     await client.connect().catch((reason) => {
-      console.log("could not connect");
+      console.log("could not connect", reason);
       process.exit(1);
     });
     await ping(client);
