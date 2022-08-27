@@ -1,11 +1,14 @@
 {
   "author": "Frederic G. MARAND <fgm@osinet.fr>",
-  "homepage": "https://github.com/fgm/untilMongod",
   "dependencies": {
-    "mongodb": "^3.6.3"
+    "mongodb": "^4.9.0"
   },
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "prettier": "^2.7.1"
   },
-  "license": "MIT"
+  "homepage": "https://github.com/fgm/untilMongod",
+  "license": "MIT",
+  "scripts": {
+    "lint": "prettier -c app.js"
+  }
 }

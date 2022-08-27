@@ -1,12 +1,11 @@
 package dial
 
 import (
-	"testing"
-	"time"
-
 	"errors"
 	"regexp"
 	"strings"
+	"testing"
+	"time"
 )
 
 func TestDial_happy(t *testing.T) {
@@ -125,60 +124,72 @@ func TestDial_verbose(t *testing.T) {
 		}
 		return errors.New(ExpectedErrorString)
 	}
-
-	var b strings.Builder
-
-	b = strings.Builder{}
-	reporter := NewReporter(true, &b)
-
-	Dial("", 1, slowDialer, reporter)
-	if b.Len() != 0 {
-		t.Error("Success without a retry should not output anything.")
+	assertSilence := func(b *strings.Builder, format string) {
+		if b.Len() != 0 {
+			t.Errorf(format, b.String())
+		}
+	}
+	assertRetries := func(b *strings.Builder, format string) {
+		var retryRegex = regexp.MustCompile(`^Unavailable in .* seconds, retrying in .* seconds\.`)
+		actual := b.String()
+		if !retryRegex.MatchString(actual) {
+			t.Errorf(format, actual)
+		}
 	}
 
-	// Retried response should output a retry message.
-	Dial("", 1*time.Second, slowDialer, reporter)
-	var retryRegex = regexp.MustCompile(`^Unavailable in .* seconds, retrying in .* seconds\.`)
-	var output = b.String()
-	if !retryRegex.MatchString(output) {
-		t.Error("Verbose output on a retry did not match the expected pattern")
+	checks := []struct {
+		name    string
+		timeout time.Duration
+		test    func(b *strings.Builder, format string)
+		format  string
+	}{
+		// Immediate success should not output anything
+		{"short", 1, assertSilence, "Success without a retry should not output anything: %q"},
+		// Retried response should output a retry message.
+		{"normal", time.Second, assertRetries, "Verbose output on a retry did not match the expected pattern: %#v"},
 	}
 
+	for _, check := range checks {
+		t.Run(check.name, func(t *testing.T) {
+			b := &strings.Builder{}
+			reporter := NewReporter(true, b)
+			defer func() {
+				if t.Failed() {
+					t.Log(t.Name(), b.String())
+				}
+			}()
+			Dial(DefaultURL, check.timeout, slowDialer, reporter)
+			check.test(b, check.format)
+		})
+	}
 }
 
-func TestNewMgoV2DialIntegration(t *testing.T) {
+func TestDialIntegration(t *testing.T) {
+	const Timeout = 100 * time.Millisecond
 	if testing.Short() {
-		t.Skip("Skipping slow test for NewMgoV2Dial")
+		t.Skip("Skipping slow test for NewMongoDbV2Dial")
 	}
 	t.Parallel()
-	dialer := NewMgoV2Dial()
-	err := dialer("", 100*time.Millisecond)
-	// err will be true since there is no server at "": this is not an error.
-	if err != nil {
-		if err.Error() != "no reachable servers" {
-			t.Error("NewMgoV2Dial returned an unexpected error.")
-		}
-	}
-
-	// This may succeed if there is a server on the default MongoDB URL.
-	err = dialer("mongodb://localhost:27017", 100*time.Millisecond)
-	// err may be true if there is no server at the default URL: this is not an error.
-	if err != nil {
-		if err.Error() != "no reachable servers" {
-			t.Error("NewMgoV2Dial returned an unexpected error.")
-		}
-	}
-
-}
-
-func TestNewMongoDbDialIntegration(t *testing.T) {
-	t.Parallel()
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("NewMongoDbial() did not panic although no implementation exists")
-		}
-	}()
-
 	dialer := NewMongoDbDial()
-	dialer("", 100*time.Millisecond)
+	checks := [...]struct {
+		name     string
+		url      string
+		expected string
+	}{
+		// err will be non-nil since there is no server at "": this is not an error.
+		{"empty url", "", "error parsing uri"},
+		// This may succeed if there is a server on the default MongoDB URL.
+		{"default url", DefaultURL, "server selection"},
+	}
+
+	for _, check := range checks {
+		t.Run(check.name, func(t *testing.T) {
+			err := dialer(check.url, Timeout)
+			if err != nil {
+				if !regexp.MustCompile(check.expected).MatchString(err.Error()) {
+					t.Errorf("NewMongoDbDial returned an unexpected error: %v", err)
+				}
+			}
+		})
+	}
 }

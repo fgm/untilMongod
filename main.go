@@ -41,7 +41,7 @@ func main() {
 	var url string
 	var timeout time.Duration
 	var verbose bool
-	var dialer = dial.NewMgoV2Dial()
+	var dialer = dial.NewMongoDbDial()
 
 	parseFlags(&url, &timeout, &verbose)
 

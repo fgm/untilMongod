@@ -1,14 +1,19 @@
 package dial
 
 import (
-	"time"
-
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"time"
 
-	"github.com/globalsign/mgo"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
+
+const DefaultURL = "mongodb://localhost:27017"
 
 // Result is the type of the Dial() results.
 type Result int
@@ -27,30 +32,24 @@ const (
 // mechanism.
 type DriverDial = func(url string, duration time.Duration) error
 
-// NewMgoV2Dial returns a new DriverDial function using the MGOv2 driver
-// available at https://github.com/globalsign/mgo
-//
-// That driver replaces the original Labix driver and the now-unmaintained
-// https://github.com/go-mgo/mgo/tree/v2 driver.
-func NewMgoV2Dial() DriverDial {
-	return func(url string, duration time.Duration) error {
-		session, err := mgo.DialWithTimeout(url, duration)
-
-		if session != nil {
-			session.Close()
-		}
-
-		return err
-	}
-}
-
 // NewMongoDbDial returns a new DriverDial function using the official MongoDB
 // driver available at https://github.com/mongodb/mongo-go-driver
 func NewMongoDbDial() DriverDial {
-	// BUG(fgm): NewMongoDBDial() needs to be actually implemented, when that driver
-	// reaches at least beta status and gets some documentation.
 	return func(url string, duration time.Duration) error {
-		panic("MongoDB official driver is not implemented yet")
+		ctx, cancel := context.WithTimeout(context.Background(), duration)
+		c, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
+		if err != nil {
+			cancel()
+			return err
+		}
+		err = c.Ping(ctx, readpref.Primary())
+		if err != nil {
+			cancel()
+			return err
+		}
+		err = c.Disconnect(ctx)
+		cancel()
+		return err
 	}
 }
 
@@ -67,7 +66,7 @@ type Reporter struct {
 // Printf only prints if r.verbose is true.
 func (r Reporter) Printf(format string, v ...interface{}) {
 	if r.verbose {
-		fmt.Fprintf(r.writer, format, v...)
+		_, _ = fmt.Fprintf(r.writer, format, v...)
 	}
 }
 
@@ -93,7 +92,6 @@ func NewReporter(verbose bool, w ...io.Writer) Reporter {
 // using the specified connection method.
 //
 // It returns a status code usable with os.Exit().
-//
 func Dial(url string, maxTimeout time.Duration, dialer DriverDial, r Reporter) Result {
 	const Nanoseconds = float64(time.Second)
 
@@ -107,12 +105,12 @@ func Dial(url string, maxTimeout time.Duration, dialer DriverDial, r Reporter) R
 
 		// Success.
 		if err == nil {
-			r.Printf("Connected in %d msec.\n", time.Now().Sub(t0) / 1.0E6)
+			r.Printf("Connected in %d msec.\n", time.Now().Sub(t0)/1.0e6)
 			return Success
 		}
 
-		// Unexpected errors.
-		if err.Error() != ExpectedErrorString {
+		// Ignore expected errors, but return on others.
+		if err.Error() != ExpectedErrorString && !errors.Is(err, context.DeadlineExceeded) {
 			r.Printf("Unexpected error %v.\n", err)
 			return OtherError
 		}
