@@ -8,10 +8,10 @@ becomes available, without relying on manually adjusted timeouts.
 
 [![GoDoc](https://godoc.org/github.com/fgm/untilMongod?status.svg)](https://godoc.org/github.com/fgm/untilMongod)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fgm/untilMongod)](https://goreportcard.com/report/github.com/fgm/untilMongod)
-[![Build Status](https://travis-ci.org/fgm/untilMongod.svg?branch=develop)](https://travis-ci.org/fgm/untilMongod)
+[![Build Status](https://app.travis-ci.com/fgm/untilMongod.svg?branch=main)](https://app.travis-ci.com/fgm/untilMongod)
 [![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/test_coverage)](https://codeclimate.com/github/fgm/untilMongod/test_coverage)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_small)
 
 ## Syntax
 
@@ -28,7 +28,8 @@ becomes available, without relying on manually adjusted timeouts.
 * `-timeout` is the maximum delay (in seconds) the command will wait before aborting.
 * `-v` will increase verbosity, outputting messages on stderr on each retry.
 
-[Dial() URL extensions]: https://www.mongodb.com/docs/drivers/go/current/fundamentals/connection/#std-label-golang-connection-options
+[Dial() URL options]: https://www.mongodb.com/docs/drivers/go/current/fundamentals/connection/#std-label-golang
+-connection-options
 
 
 ## Exit codes
@@ -40,10 +41,10 @@ becomes available, without relying on manually adjusted timeouts.
 
 ## Installing the command
 
-Assuming a Go 1.15 toolchain is available, just do:
+Assuming a Go 1.19 toolchain is available, just do:
 
 ```bash
-go get github.com/fgm/untilMongod
+go install github.com/fgm/untilMongod@latest
 ```
 
 This will install the `untilMongod` command in `$GOPATH/bin`, by default:
@@ -75,23 +76,22 @@ bash example.bash
 
 ## Running tests
 
-untilMongod uses the standard go testing package. Tests should pass whether or
-not a `mongod|mongos` is available at the default `mongodb://localhost:27017`
-URL, but they will only cover the successful connection path if an instance is
-available.
+untilMongod uses the standard go testing package. 
+Tests should pass, whether or not a `mongod|mongos` is available at the default `mongodb://localhost:27017` URL, 
+but they will only cover the successful connection path if an instance is available.
 
 The recommended ways to run tests are:
 
 ```bash
 # Running all tests and generating coverage.
-go test -coverprofile coverage -covermode count ./...
+go test -race -coverprofile coverage -covermode atomic ./...
 go tool cover -html coverage
 
 # Running only unit tests
-go test -short ./...
+go test -race -short ./...
 
 # Running only integration tests
-go test -run 'Integration$' ./...
+go test -race -run 'Integration$' ./...
 ```
 
 

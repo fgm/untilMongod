@@ -2,13 +2,13 @@
   <configuration default="false" name="Test - integration only" type="GoTestRunConfiguration" factoryName="Go Test" singleton="true">
     <module name="untilMongod" />
     <working_directory value="$PROJECT_DIR$/" />
-    <go_parameters value="-i -run 'Integration$'" />
-    <framework value="gotest" />
+    <go_parameters value="-race -run 'Integration$'" />
     <kind value="DIRECTORY" />
     <package value="github.com/fgm/untilMongod" />
     <directory value="$PROJECT_DIR$/" />
     <filePath value="$PROJECT_DIR$/" />
+    <framework value="gotest" />
     <pattern value="./..." />
-    <method />
+    <method v="2" />
   </configuration>
 </component>

@@ -11,10 +11,7 @@ import (
 func TestDial_happy(t *testing.T) {
 	t.Parallel()
 
-	var actual Result
-	var happyDialer DriverDial
-
-	happyDialer = func(url string, duration time.Duration) error {
+	var happyDialer DriverDial = func(url string, duration time.Duration) error {
 		return nil
 	}
 
@@ -32,7 +29,7 @@ func TestDial_happy(t *testing.T) {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
 			reporter := NewReporter(false)
-			actual = Dial("", attempt.timeout, happyDialer, reporter)
+			actual := Dial("", attempt.timeout, happyDialer, reporter)
 			if actual != attempt.expected {
 				t.Logf("Expected %v, got %v\n", attempt.expected, actual)
 				t.Fail()
@@ -44,10 +41,7 @@ func TestDial_happy(t *testing.T) {
 func TestDial_sad(t *testing.T) {
 	t.Parallel()
 
-	var actual Result
-	var sadDialer DriverDial
-
-	sadDialer = func(url string, duration time.Duration) error {
+	var sadDialer DriverDial = func(url string, duration time.Duration) error {
 		return errors.New("sad")
 	}
 
@@ -65,7 +59,7 @@ func TestDial_sad(t *testing.T) {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
 			reporter := NewReporter(false)
-			actual = Dial("", attempt.timeout, sadDialer, reporter)
+			actual := Dial("", attempt.timeout, sadDialer, reporter)
 			if actual != attempt.expected {
 				t.Logf("Expected %v, got %v\n", attempt.expected, actual)
 				t.Fail()
@@ -77,10 +71,7 @@ func TestDial_sad(t *testing.T) {
 func TestDial_slow(t *testing.T) {
 	t.Parallel()
 
-	var actual Result
-	var slowDialer DriverDial
-
-	slowDialer = func(url string, timeout time.Duration) error {
+	var slowDialer DriverDial = func(url string, timeout time.Duration) error {
 		time.Sleep(1 * time.Millisecond)
 		if timeout > 10*time.Millisecond {
 			return nil
@@ -103,7 +94,7 @@ func TestDial_slow(t *testing.T) {
 		t.Run(attempt.message, func(t *testing.T) {
 			t.Parallel()
 			reporter := NewReporter(false)
-			actual = Dial("", attempt.timeout, slowDialer, reporter)
+			actual := Dial("", attempt.timeout, slowDialer, reporter)
 			if actual != attempt.expected {
 				t.Logf("Expected %v, got %v\n", attempt.expected, actual)
 				t.Fail()
@@ -115,9 +106,7 @@ func TestDial_slow(t *testing.T) {
 func TestDial_verbose(t *testing.T) {
 	t.Parallel()
 	// This dialer only succeeds when given at least 10 msec as a timeout.
-	var slowDialer DriverDial
-
-	slowDialer = func(url string, timeout time.Duration) error {
+	var slowDialer DriverDial = func(url string, timeout time.Duration) error {
 		if timeout > 10*time.Millisecond {
 			time.Sleep(timeout)
 			return nil

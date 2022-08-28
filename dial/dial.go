@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+// DefaultURL is the default MongoDB server URL.
 const DefaultURL = "mongodb://localhost:27017"
 
 // Result is the type of the Dial() results.
