@@ -2,12 +2,17 @@ const { MongoClient } = require("mongodb");
 
 const url = process.env.MONGO_URL;
 
-const ping = async (db) => {
-  let adminDb = await db.db("admin");
-  const { ok } = await adminDb.command({ ping: 1 }).catch(showPingError);
-  console.log("Ping from NodeJS", ok ? "ok" : "ko");
-  db.close();
-};
+async function ping(client) {
+  try {
+    const adminDb = await client.db("admin");
+    const { ok } = await adminDb.command({ ping: 1 });
+    console.log("Ping from NodeJS", ok ? "ok" : "ko");
+  } catch (reason) {
+    showPingError(reason);
+  } finally {
+    await client.close();
+  }
+}
 
 const showPingError = async (reason) => {
   if (reason.constructor.name !== "MongoError") {
@@ -20,24 +25,24 @@ const showPingError = async (reason) => {
     code: reason.code,
     codeName: reason.codeName,
   };
-  console.log(details);
+  console.error(details);
 };
 
 async function run() {
   const client = new MongoClient(url, {
-    useUnifiedTopology: true,
     connectTimeoutMS: 100,
     serverSelectionTimeoutMS: 100,
   });
+
   try {
-    await client.connect().catch((reason) => {
-      console.log("could not connect", reason);
-      process.exit(1);
-    });
-    await ping(client);
+    await client.connect();
+    await ping(client); // Only attempt ping after connection succeeded.
+  } catch (reason) {
+    console.log("Could not connect to MongoDB:", reason);
+    process.exit(1);
   } finally {
-    await client.close();
+    // No need to close here: we closed in the ping.
   }
 }
 
-run().catch(console.dir);
+run().catch(console.error);

@@ -41,7 +41,7 @@ becomes available, without relying on manually adjusted timeouts.
 
 ## Installing the command
 
-Assuming a Go 1.19 toolchain is available, just do:
+Assuming a Go 1.22 or later toolchain is available, just do:
 
 ```bash
 go install github.com/fgm/untilMongod@latest
@@ -77,7 +77,7 @@ bash example.bash
 ## Running tests
 
 untilMongod uses the standard go testing package. 
-Tests should pass, whether or not a `mongod|mongos` is available at the default `mongodb://localhost:27017` URL, 
+Tests should pass, regardless of whether a `mongod|mongos` is available at the default `mongodb://localhost:27017` URL, 
 but they will only cover the successful connection path if an instance is available.
 
 The recommended ways to run tests are:
@@ -97,7 +97,7 @@ go test -race -run 'Integration$' ./...
 
 ## IP information
 
-* © 2018-2022 Frederic G. MARAND.
+* © 2018-2024 Frederic G. MARAND.
 * Published under the [General Public License](LICENSE), version 3 or later.
 * MongoDB is a trademark of MongoDB, Inc.
 
