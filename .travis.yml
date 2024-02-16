@@ -5,8 +5,7 @@ os: linux
 language: go
 
 go:
-  - "1.18"
-  - "1.19"
+  - "1.22"
 
 services:
   - mongodb
