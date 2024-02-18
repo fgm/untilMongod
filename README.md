@@ -11,6 +11,7 @@ becomes available, without relying on manually adjusted timeouts.
 [![Build Status](https://app.travis-ci.com/fgm/untilMongod.svg?branch=main)](https://app.travis-ci.com/fgm/untilMongod)
 [![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/test_coverage)](https://codeclimate.com/github/fgm/untilMongod/test_coverage)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fgm/untilMongod/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fgm/untilMongod)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_small)
 
 ## Syntax
