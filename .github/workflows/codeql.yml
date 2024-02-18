@@ -12,12 +12,21 @@
 name: "CodeQL"
 
 on:
+  # For Branch-Protection check. Only the default branch is supported. See
+  # https://github.com/ossf/scorecard/blob/main/docs/checks.md#branch-protection
+  branch_protection_rule:
   push:
     branches: [ "main" ]
   pull_request:
+    # The branches below must be a subset of the branches above
     branches: [ "main" ]
+  # To guarantee Maintained check is occasionally updated. See
+  # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
   schedule:
     - cron: '27 8 * * 3'
+
+# Declare default permissions as read only.
+permissions: read-all
 
 jobs:
   analyze:
@@ -40,6 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Override automatic language detection by changing the below list
         language: [ 'go', 'javascript-typescript' ]
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
         # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
@@ -49,6 +59,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Set up required Go version
+      uses: actions/setup-go@v5
+      with:
+        go-version: '^1.22'
+    - name: Ensure actual Go version
+      run: go version
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -61,7 +78,6 @@ jobs:
 
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
-
 
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
@@ -83,10 +99,19 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
   ossf:
-    name: OSSF Scorecard action
-    uses: ossf/scorecard-action@v2.3.1
-    with:
-      results_file: ossf.sarif
-      results_format: sarif
-      public_results: true
-      
+    name: OSSF Scorecard
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 3
+    permissions:
+      # required for all workflows
+      security-events: write
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: OSSF Scorecard action
+      uses: ossf/scorecard-action@v2.3.1
+      with:
+        results_file: ossf.sarif
+        results_format: sarif
+        publish_results: true
