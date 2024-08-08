@@ -2,7 +2,7 @@ module github.com/fgm/untilMongod
 
 go 1.22.0
 
-require go.mongodb.org/mongo-driver v1.16.0
+require go.mongodb.org/mongo-driver v1.16.1
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect
