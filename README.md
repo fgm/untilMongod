@@ -1,18 +1,19 @@
 # untilMongod
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/fgm/untilMongod)](https://pkg.go.dev/github.com/fgm/untilMongod)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fgm/untilMongod)](https://goreportcard.com/report/github.com/fgm/untilMongod)
+[![github](https://github.com/fgm/untilMongod/actions/workflows/workflow.yml/badge.svg)](https://github.com/fgm/untilMongod/actions/workflows/workflow.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
+[![codecov](https://codecov.io/gh/fgm/untilMongod/branch/main/graph/badge.svg?token=8YYX1B720M)](https://codecov.io/gh/fgm/untilMongod)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fgm/untilMongod/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fgm/untilMongod)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_small)
+
 The `untilMongod` command attempts to connect to a MongoDB® server (`mongod`) or 
 sharding front (`mongos`) for a maximum duration.
 
 Its main use is as a way to start using a connection as soon as its server 
 becomes available, without relying on manually adjusted timeouts.
 
-[![GoDoc](https://godoc.org/github.com/fgm/untilMongod?status.svg)](https://godoc.org/github.com/fgm/untilMongod)
-[![Go Report Card](https://goreportcard.com/badge/github.com/fgm/untilMongod)](https://goreportcard.com/report/github.com/fgm/untilMongod)
-[![Build Status](https://app.travis-ci.com/fgm/untilMongod.svg?branch=main)](https://app.travis-ci.com/fgm/untilMongod)
-[![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/test_coverage)](https://codeclimate.com/github/fgm/untilMongod/test_coverage)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fgm/untilMongod/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fgm/untilMongod)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_small)
 
 ## Syntax
 
