@@ -31,37 +31,40 @@ package main
 
 import (
 	"flag"
+	"io"
 	"os"
 	"time"
 
 	"github.com/fgm/untilMongod/dial"
 )
 
-func parseFlags(url *string, timeout *time.Duration, verbose *bool) {
-	flag.StringVar(url, "url", "mongodb://localhost:27017",
+func parseFlags(fs *flag.FlagSet, args []string, url *string, timeout *time.Duration, verbose *bool) {
+	fs.StringVar(url, "url", "mongodb://localhost:27017",
 		"The mongodb URL to which to connect.")
-	flag.BoolVar(verbose, "v", false,
+	fs.BoolVar(verbose, "v", false,
 		"Make the command more verbose")
 
-	uintTimeout := flag.Uint("timeout", 30,
+	uintTimeout := fs.Uint("timeout", 30,
 		"The maximum delay in seconds after which the command will stop trying to connect")
 
-	flag.Parse()
+	_ = fs.Parse(args)
 
 	*timeout = time.Duration(*uintTimeout) * time.Second
 }
 
-func main() {
+func realMain(w io.Writer, fs *flag.FlagSet, args []string, dialer dial.DriverDial) int {
 	var (
-		dialer  = dial.NewMongoDbDial()
 		timeout time.Duration
 		url     string
 		verbose bool
 	)
 
-	parseFlags(&url, &timeout, &verbose)
-
-	reporter := dial.NewReporter(verbose)
+	parseFlags(fs, args, &url, &timeout, &verbose)
+	reporter := dial.NewReporter(verbose, w)
 	dialResult := dial.Dial(url, timeout, dialer, reporter)
-	os.Exit(int(dialResult))
+	return int(dialResult)
+}
+
+func main() {
+	os.Exit(realMain(os.Stderr, flag.CommandLine, os.Args[1:], dial.NewMongoDbDial()))
 }

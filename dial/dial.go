@@ -77,7 +77,7 @@ func (r Reporter) Printf(format string, v ...interface{}) {
 
 // NewReporter creates an instance of Reporter.
 //
-// The final variadic io.Writer argument allows passing ONE specific writer,
+// The final variadic io.Writer argument allows passing ONE specific writer
 // and defaulting to os.Stderr when none is passed.
 func NewReporter(verbose bool, w ...io.Writer) Reporter {
 	var writer io.Writer
