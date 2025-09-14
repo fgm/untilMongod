@@ -10,6 +10,7 @@ brew services stop mongodb-community
   brew services start mongodb-community
 ) &
 
+# Now use untilMongod to wait for the smallest duration possible until MongoDB is available.
 go run .. -v -url "${MONGO_URL}" -timeout "${TIMEOUT}"
 if [ $? != 0 ]; then
   echo "Failed connecting to server in ${TIMEOUT} seconds. Aborting"

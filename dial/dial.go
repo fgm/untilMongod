@@ -13,8 +13,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// DefaultURL is the default MongoDB server URL.
-const DefaultURL = "mongodb://localhost:27017"
+const (
+	// DefaultURL is the default MongoDB server URL.
+	DefaultURL = "mongodb://localhost:27017"
+	// DefaultBaseTimeout is the initial timeout used by Dial() before backoff starts.
+	DefaultBaseTimeout = 1 * time.Millisecond
+)
 
 // Result is the type of the Dial() results.
 type Result int
@@ -99,14 +103,14 @@ func Dial(url string, maxTimeout time.Duration, dialer DriverDial, r Reporter) R
 	t0 := time.Now()
 	tMax := t0.Add(maxTimeout)
 
-	timeout := 1 * time.Millisecond
+	timeout := DefaultBaseTimeout
 
 	for {
 		err := dialer(url, timeout)
 
 		// Success.
 		if err == nil {
-			r.Printf("Connected in %d msec.\n", time.Now().Sub(t0)/1.0e6)
+			r.Printf("Connected in %d msec.\n", time.Since(t0)/1.0e6)
 			return Success
 		}
 
