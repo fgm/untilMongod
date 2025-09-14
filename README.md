@@ -6,10 +6,12 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/84de4f16f20af011cee0/maintainability)](https://codeclimate.com/github/fgm/untilMongod/maintainability)
 [![codecov](https://codecov.io/gh/fgm/untilMongod/branch/main/graph/badge.svg?token=8YYX1B720M)](https://codecov.io/gh/fgm/untilMongod)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fgm/untilMongod/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fgm/untilMongod)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_small)
 
 The `untilMongod` command attempts to connect to a MongoDB® server (`mongod`) or 
 sharding front (`mongos`) for a maximum duration.
+
+It uses exponential backoff to wait for the shortest duration possible for the server to become available,
+while still not hammering the network too much and respecting the timeout.
 
 Its main use is as a way to start using a connection as soon as its server 
 becomes available, without relying on manually adjusted timeouts.
@@ -75,6 +77,22 @@ npm i
 bash example.bash
 ``` 
 
+It will give output like:
+```
+Unavailable in 0.001198 seconds, retrying in 0.002 seconds.
+Unavailable in 0.004681 seconds, retrying in 0.002 seconds.
+Unavailable in 0.009888 seconds, retrying in 0.003 seconds.
+Unavailable in 0.017617 seconds, retrying in 0.005 seconds.
+Unavailable in 0.029178 seconds, retrying in 0.008 seconds.
+Unavailable in 0.046434 seconds, retrying in 0.011 seconds.
+Unavailable in 0.071536 seconds, retrying in 0.017 seconds.
+Unavailable in 0.108015 seconds, retrying in 0.026 seconds.
+Unavailable in 0.161230 seconds, retrying in 0.038 seconds.
+Unavailable in 0.240264 seconds, retrying in 0.058 seconds.
+Connected in 300 msec.
+Ping from NodeJS ok
+```
+
 
 ## Running tests
 
@@ -97,12 +115,9 @@ go test -race -run 'Integration$' ./...
 ```
 
 
-## IP information
+## IPand Licensing information
 
-* © 2018-2024 Frederic G. MARAND.
-* Published under the [General Public License](LICENSE), version 3 or later.
+* © 2018-2025 Frederic G. MARAND.
+* Published under the [General Public License](LICENSE), version 3.0 or later (SPDX: GPL-3.0-or-later)
 * MongoDB is a trademark of MongoDB, Inc.
 
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffgm%2FuntilMongod?ref=badge_large)

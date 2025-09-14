@@ -17,16 +17,10 @@ func IsMaxTimeoutValid(t time.Duration) bool {
 	}
 
 	limit := float64(MaxDuration) / BackoffFactor
-	if t >= time.Duration(limit) {
-		return false
-	}
-
-	return true
+	return t <= time.Duration(limit)
 }
 
-// FIXME Provide an increasing delay from an existing one.
 func backOff(current time.Duration) time.Duration {
-
 	floatNext := float64(current) * BackoffFactor
 	return time.Duration(floatNext)
 }
