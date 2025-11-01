@@ -2,7 +2,7 @@ module github.com/fgm/untilMongod
 
 go 1.25.1
 
-require go.mongodb.org/mongo-driver v1.17.4
+require go.mongodb.org/mongo-driver v1.17.6
 
 require (
 	github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c // indirect
