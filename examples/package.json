@@ -1,7 +1,7 @@
 {
   "author": "Frederic G. MARAND <fgm@osinet.fr>",
   "dependencies": {
-    "mongodb": "^6.19.0"
+    "mongodb": "^7.0.0"
   },
   "devDependencies": {
     "prettier": "^3.6.2"
