@@ -1,5 +1,6 @@
 /.idea/aws.xml
 /.idea/workspace.xml
+/.idea/copilot.*
 /coverage*
 /c.out
 /examples/node_modules
