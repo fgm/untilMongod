@@ -1,3 +1,4 @@
+// Deprecated: archived, use wait4x.dev/v3 (the "wait4x mongodb" command) instead.
 module github.com/fgm/untilMongod
 
 go 1.25.1
